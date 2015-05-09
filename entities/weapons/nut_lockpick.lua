@@ -102,17 +102,17 @@ function SWEP:PrimaryAttack()
 		data.filter = self.Owner
 	local entity = util.TraceLine(data).Entity
 
-	if (IsValid(entity) and
-		(
-			(entity:isDoor()) or
-			(entity:IsVehicle())
-		)
-	) then
-		self.Owner:setAction("Picklocking...", time, function()
-			self:toggleUnlock(entity, true)
-			self.Owner:StripWeapon("nut_lockpick")
-			self:SetisLockpicking(false)
-		end)			
+		if (IsValid(entity) and
+			(
+				(entity:isDoor()) or
+				(entity:IsVehicle())
+			)
+		) then
+			self.Owner:setAction("Picklocking...", time, function()
+				self:toggleUnlock(entity, true)
+				self.Owner:StripWeapon("nut_lockpick")
+				self:SetisLockpicking(false)
+			end)			
 
 		return
 	end
@@ -124,7 +124,6 @@ function SWEP:Think()
 	local trace = self:GetOwner():GetEyeTrace()
 
 	if not IsValid(trace.Entity) or not trace.Entity:isDoor() or trace.HitPos:Distance(self:GetOwner():GetShootPos()) > 100 then
-		print("bope")
-		self:SetisLockpicking(false)
+		self.Owner:StripWeapon("nut_lockpick")
 	end
 end
