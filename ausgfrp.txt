@@ -1,0 +1,7 @@
+"ausgfrp"
+{
+	"base"		"nutscript"
+	"title"		"ARRPEE"
+	"author"	"PopeXIII"
+	"menusystem" "1"
+}
