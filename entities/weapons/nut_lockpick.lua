@@ -34,15 +34,11 @@ SWEP.Secondary.ClipSize = -1
 SWEP.Secondary.DefaultClip = -1     
 SWEP.Secondary.Automatic = false        
 SWEP.Secondary.Ammo = ""
-
+SWEP.isLP = false
 
 function SWEP:Initialize()
 	self:SetHoldType("normal")
-	self:SetisLockpicking(false)
-end
-
-function SWEP:SetupDataTables()
-	self:NetworkVar("Bool", 0, "isLockpicking")
+	self.isLP = false
 end
 
 function SWEP:toggleUnlock(door, state) 
@@ -83,7 +79,7 @@ function SWEP:PrimaryAttack()
 	local time = math.random(1,10)
 	local time2 = math.max(time, 1)
 	local ply = self.Owner:getChar()
-	self:SetisLockpicking(true)
+	self.isLP = true
 
 	self:SetNextPrimaryFire(CurTime() + time2)
 	self:SetNextSecondaryFire(CurTime() + time2)
@@ -109,9 +105,13 @@ function SWEP:PrimaryAttack()
 			)
 		) then
 			self.Owner:setAction("Picklocking...", time, function()
-				self:toggleUnlock(entity, true)
-				self.Owner:StripWeapon("nut_lockpick")
-				self:SetisLockpicking(false)
+				if self.isLP != false then
+					self:toggleUnlock(entity, true)
+					self.Owner:StripWeapon("nut_lockpick")
+					self.isLP = false
+				else 
+					return
+				end
 			end)			
 
 		return
@@ -123,7 +123,14 @@ function SWEP:Think()
 
 	local trace = self:GetOwner():GetEyeTrace()
 
-	if not IsValid(trace.Entity) or not trace.Entity:isDoor() or trace.HitPos:Distance(self:GetOwner():GetShootPos()) > 100 then
-		self.Owner:StripWeapon("nut_lockpick")
-	end
+	if self.isLP == true then
+		if not IsValid(trace.Entity) or not trace.Entity:isDoor() or trace.HitPos:Distance(self:GetOwner():GetShootPos()) > 100 then
+			if (SERVER) then
+				self.Owner:StripWeapon("nut_lockpick")
+				self.isLP = false
+			end
+		end
+	else
+		return 
+	end 
 end

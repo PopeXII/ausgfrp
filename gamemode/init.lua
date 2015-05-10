@@ -1,5 +1,7 @@
-AddCSLuaFile("cl_init.lua")
 DeriveGamemode("nutscript")
+
+AddCSLuaFile("cl_init.lua")
+AddCSLuaFile("ausgfrp/schema/sv_jail.lua")
 
 print("Serverside Loaded!")
 
